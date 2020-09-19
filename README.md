@@ -1,5 +1,4 @@
 # editor
-=======
 React小练习
 
 ## Available Scripts
