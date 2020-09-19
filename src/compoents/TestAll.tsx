@@ -2,60 +2,78 @@ import React,{ChangeEvent,FormEvent,useContext, useReducer,useState, useEffect} 
 import {TestContext} from '../App'
 import {produce} from 'immer' 
 import DeleteElement from './DeleteElement'
+// import 'test.css'
+import { v4 as uuidv4 } from 'uuid';
+
+interface elementContent{
+    id:string,
+    type:string,
+    content:string
+}
 
 const _elementContent=[
-    {key:0,type:'',content:''}
+    {id:'',type:'',content:''}
 ]
 
 const initialPic = {
-    key:0,
+    id:uuidv4(),
     type:'pic',
     content:'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png'
 }
 
 const initialTxt = {
-    key:0,
+    id:uuidv4(),
     type:'txt',
     content:'hello bonjour'
 }
 
 const TestAll:React.FC<any> = (props) =>{//any要改的
-    const [elementContent, setElementContent] = useState<typeof _elementContent>(_elementContent);//类型要改
+    const [elementContent, setElementContent] = useState<elementContent[]>(_elementContent);
     const [isPicEditShow, setIsPicEditShow] = useState<boolean>(false);//设置是否显示图像编辑框
     const [isTextEditShow, setIsTextEditShow] = useState<boolean>(false);//设置是否显示文字编辑框
     const [isDeleteShow, setIsDeleteShow] = useState<boolean>(false);//设置是否显示文字编辑框
-    const [keystate, setKeystate] = useState<number>(-1);//设置keystate
+    const [idstate, setIdstate] = useState<string>();//设置idstate
     const [picvalue, setPicvalue] = useState<string>(initialPic.content);//图像编辑框默认值
     const [txtvalue, setTxtvalue] = useState<string>(initialTxt.content);//文本编辑框默认值
 
+    //检查localstorage
+    useEffect(() => {
+        let elementList = localStorage.getItem('elementContent');
+        if(elementList){
+            setElementContent([...JSON.parse(elementList)])
+        }
+    }, [])
+
     //加图片
     const addPic = (e: FormEvent<HTMLButtonElement>) => {
-        if(_elementContent.length === 1 && _elementContent[0].key === 0 && _elementContent[0].type === ''){
-            _elementContent[0] = initialPic;
+        if(elementContent.length === 1 && elementContent[0].type === ''){
+            elementContent[0] = initialPic;
             setElementContent([initialPic]);
         }else{
-            _elementContent.push(
+            elementContent.push(
                 {
-                    key:_elementContent.length,
+                    id: uuidv4(),//
                     type:'pic',
                     content:initialPic.content 
                 }
             )
-            setElementContent([..._elementContent])  
+            setElementContent([...elementContent]);
         }
         //测试
-        //alert('index:'+ (_elementContent.length-1) +'key:'+_elementContent[_elementContent.length-1].key);
+        //alert('index:'+ (elementContent.length-1) +'key:'+elementContent[elementContent.length-1].key);
     };
 
     //编辑图片
-    const editPic = (e: FormEvent<HTMLImageElement>,key:number) => {
+    const editPic = (e: FormEvent<HTMLImageElement>,id:string) => {
+        const pic = elementContent.find(e => e.id === id)
         setIsDeleteShow(true);
         //切换编辑窗
         setIsPicEditShow(true);
         setIsTextEditShow(false);
+        setPicvalue(pic?String(pic.content):"")
         //修改key
-        setKeystate(key)
-        return keystate;   
+        setIdstate(id);  
+
     };
     
     //获取图像编辑框改动
@@ -65,59 +83,64 @@ const TestAll:React.FC<any> = (props) =>{//any要改的
 
     //修改图片按钮
     const savePic = (e:FormEvent<HTMLButtonElement>) => {
-        let key = keystate
-        _elementContent[key] = {
-            key:key,
-            type:'pic',
-            content:picvalue 
-        }
-        setElementContent([..._elementContent])
+
+        elementContent.forEach(el => {
+            if(el.id === idstate)
+             el.content = picvalue; 
+        })
+     
+        setElementContent([...elementContent]);
+
     };
 
     //加文字
     const addTxt = (e: FormEvent<HTMLButtonElement>) => {
-        if(_elementContent.length === 1 && _elementContent[0].type === ''){
-            _elementContent[0] = initialTxt;
+        if(elementContent.length === 1 && elementContent[0].type === ''){
+            elementContent[0] = initialTxt;
             setElementContent([initialTxt]);
         }else{
-            _elementContent.push({
-                    key:_elementContent.length,
+            elementContent.push({
+                    id:uuidv4(),//
                     type:'txt',
                     content:initialTxt.content
             })  
         }
-        setElementContent([..._elementContent])
+        setElementContent([...elementContent]);
         //测试
-        //alert('index:'+ (_elementContent.length-1) +'key:'+_elementContent[_elementContent.length-1].key);
+        //alert('index:'+ (elementContent.length-1) +'key:'+elementContent[elementContent.length-1].key);
     };
 
-    //编辑文字 !!!!!!!!!!
-    const editTxt = (e: FormEvent<HTMLParagraphElement>,key:number) => {
-        _elementContent[key] = {
-            key:key,
-            type:'txt',
-            content:txtvalue //有问题
-        }
-        
+    //编辑文字
+    const editTxt = (e: FormEvent<HTMLParagraphElement>,id:string) => {
+        const txt = elementContent.find(e => e.id === id)
         setIsDeleteShow(true);
         //切换编辑窗
         setIsTextEditShow(true);
         setIsPicEditShow(false);
+        setTxtvalue(txt?String(txt.content):"")//
 
-        setElementContent([..._elementContent])
-
-        setKeystate(key)
-        return keystate;     
+        setIdstate(id);
     };
 
-    //获取文本编辑框改动 !!!!!!!!!
+    //获取文本编辑框改动 
     const txtChange = (e:ChangeEvent<HTMLTextAreaElement>) => {
+        elementContent.forEach(el => {
+            if(el.id === idstate)
+             el.content = e.target.value
+        })
+
+        setElementContent([...elementContent]); 
         setTxtvalue(e.target.value);
     };
 
-    //删除元素 ！！！
+    //删除元素 
     const deleteEl = (e:FormEvent<HTMLButtonElement>) => {
-        let key = keystate
+        let id = idstate;
+        let newElement = elementContent.filter(e => e.id !== id)
+        setElementContent([...newElement])
+        setIsDeleteShow(false);
+        setIsTextEditShow(false);
+        setIsPicEditShow(false);
         //根据KEY找到list中的指定对象并删除获得新的list，更新list
     };
 
@@ -128,13 +151,16 @@ const TestAll:React.FC<any> = (props) =>{//any要改的
     
     //保存所有元素
     const saveAll = (e:FormEvent<HTMLButtonElement>) => {
-        //把elementContent的所有内容存为json？localstorage
+        //把elementContent的所有内容存到localstorage
+        localStorage.setItem('elementContent',JSON.stringify(elementContent));
     };
     
     //清空所有元素
     const deleteAll = (e:FormEvent<HTMLButtonElement>) => {
-        _elementContent.splice(0,_elementContent.length);
-        setElementContent([..._elementContent])
+        elementContent.splice(0,elementContent.length);
+        setElementContent([...elementContent]);
+        //清空localstorage
+        localStorage.removeItem('elementContent');
         setIsDeleteShow(false);
         setIsTextEditShow(false);
         setIsPicEditShow(false);
@@ -153,29 +179,33 @@ const TestAll:React.FC<any> = (props) =>{//any要改的
             <h3>ChangeEl</h3>
             <div style={{display: isDeleteShow ? "block" : "none"}}>
                 <hr/>
-                <h3>AddEl</h3>
+                <h3>DeleteEl</h3>
                 <button onClick={deleteEl}>删除</button>
             </div>
             <div style={{display: isPicEditShow ? "block" : "none"}}>
                 <hr/>
                 <h4>ChangePic</h4>
-                <textarea onChange={picChange} defaultValue={picvalue}/> 
+                <textarea onChange={picChange} value={picvalue} defaultValue={picvalue}/> 
                 <br/>
                 <button onClick={savePic}>修改图片</button>
             </div>
             <div style={{display: isTextEditShow ? "block" : "none"}}>
                 <h4>ChangeText</h4>
-                <textarea onChange={txtChange} defaultValue={txtvalue}/>     
+                <textarea onChange={txtChange} value={txtvalue} defaultValue={txtvalue}/>     
             </div>
+
+            <div>
             <hr/>
             <h3>ShowEl</h3>
             {
-                elementContent.map((e,i)=>{
-                    if(e.type ==="pic") return (<img key={i} src={e.content} onClick={(e)=>{editPic(e,i)}}/>)
-                    else if(e.type==="txt") return (<p key={i} onClick={(e)=>{editTxt(e,i)}}>{e.content}</p>)
+                elementContent.map((el,i)=>{
+                    //还差样式激活 ！！！
+                    if(el.type ==="pic") return (<img key={i} src={el.content} onClick={(e)=>{editPic(e,el.id)}} alt="loading error"/>)
+                    else if(el.type ==="txt") return (<p key={i} onClick={(e)=>{editTxt(e,el.id)}}>{el.content}</p>)
                 })  
             }
-            <hr/>            
+            <hr/>  
+            </div>          
         </div>
     )
 }
