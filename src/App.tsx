@@ -1,70 +1,56 @@
-import React,{createContext,useState,useReducer}from 'react';
+import React,{createContext,useEffect,useState} from 'react';
 import './App.css';
-import EditPage from './compoents/EditPage';
-import ShowElement from './compoents/ShowElement';
-import DeleteElement from './compoents/DeleteElement';
-import AddElement from './compoents/AddElement';
-import ChangeElement from './compoents/ChangeElement';
-import TestReducer from './compoents/TestReducer';
-import TestConnect from './compoents/TestConnect';
-import TestAll from './compoents/TestAll';
+import AddElement from './components/AddElement';
+import EditPage from './components/EditPage';
+import ShowElement from './components/ShowElement';
+import DeleteElement from './components/DeleteElement';
+import ChangeElement from './components/ChangeElement';
+import TestAll from './components/TestAll';
 
+interface IElementProps{
+  id:string,
+  type:string,
+  content:string
+}
 
-// const elementContent = [
-//   {type:"pic",url:"https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"},
-//   {type:"text",txt:"abcd"},
-//   {type:"text",txt:"11111111111"},
-//   {type:"pic",url:"https://bkimg.cdn.bcebos.com/pic/55e736d12f2eb938cf4969a2dc628535e5dd6fbd?x-bce-process=image/resize,m_lfit,w_268,limit_1/format,f_jpg"}
-// ]
-
-const elementContent = [
-  {type:"pic",url:""},
-  {type:"txt",txt:""}
+const _elementContent:Array<IElementProps>=[
+  {id:'',type:'',content:''}
 ]
+const key = 1;
 
-// const initialState = {
-//   url: "https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png",
-//   txt: "empty text",
-// }
-
-// function reducer(state:typeof initialState, action:any) {
-//   switch (action.type) {
-//       case 'addpic':
-//           return {...state, url:action.url}
-//       case 'addtext':
-//           return {...state, txt:state.txt}
-//       default:
-//           throw new Error();
-//   }
-// }
-
-export const TestContext = createContext(elementContent)
+export const TestContext = createContext(_elementContent);
 
 function App() {
-  
+  const [elementContent, setElementContent] = useState<IElementProps[]>(_elementContent);
+  //检查localstorage
+  useEffect(() => {
+    let elementList = localStorage.getItem('elementContent');
+    if(elementList){
+        setElementContent([...JSON.parse(elementList)])
+    }
+  }, [])
+
   return (
     <div className="App">
-      <TestContext.Provider value={elementContent}>
-        <div className="left">
-          {/* <TestReducer/> */}
-          {/* <TestConnect/> */}
-          <TestAll/> 
-          {/* <hr/>
-          <EditPage/>
-          <hr/>
-          <AddElement/> */}
-        </div>
-        {/* <hr/>
-        <div className="middle">
-          <ShowElement/>
-        </div>
-        <hr/>
-        <div className="right">
-          <DeleteElement/>
-          <hr/>
-          <ChangeElement/>
-        </div> */}
-      </TestContext.Provider>
+      <TestAll/>
+      {/* <TestContext.Provider value={elementContent}>
+      <div className='container-fluid'>
+            <div className='row'>
+              <div className='col-xs-2'>
+              <EditPage/>
+              <hr/>
+              <AddElement/>
+              </div>
+              <ShowElement/>
+              <div className='col-xs-4 text-left'>
+              <h3>元素操作</h3>
+              <DeleteElement/>
+              <hr/>
+              <ChangeElement/>
+              </div>
+            </div>
+      </div>
+      </TestContext.Provider> */}
     </div>
   );
 }
