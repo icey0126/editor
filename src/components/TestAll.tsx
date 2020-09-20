@@ -1,8 +1,9 @@
-import React,{ChangeEvent,FormEvent,useContext, useReducer,useState, useEffect}  from 'react'
+import React,{ChangeEvent,FormEvent,useContext, useReducer,useState, useEffect,MouseEvent}  from 'react'
 import {TestContext} from '../App'
 import {produce} from 'immer' 
 import DeleteElement from './DeleteElement'
 import { v4 as uuidv4 } from 'uuid';
+import {Modal,Button} from 'react-bootstrap';
 
 interface elementContent{
     id:string,
@@ -34,6 +35,8 @@ const TestAll:React.FC<any> = (props) =>{//any要改的
     const [idstate, setIdstate] = useState<string>();//设置idstate
     const [picvalue, setPicvalue] = useState<string>(initialPic.content);//图像编辑框默认值
     const [txtvalue, setTxtvalue] = useState<string>(initialTxt.content);//文本编辑框默认值
+    const [isBorderShow, setIsBorderShow] = useState<boolean>(false);//边框默认值
+    const [isModalShow, setIsModalShow] = useState<boolean>(false);//模态框默认值
 
     //检查localstorage
     useEffect(() => {
@@ -51,7 +54,7 @@ const TestAll:React.FC<any> = (props) =>{//any要改的
         }else{
             elementContent.push(
                 {
-                    id: uuidv4(),//
+                    id: uuidv4(),
                     type:'pic',
                     content:initialPic.content 
                 }
@@ -85,8 +88,7 @@ const TestAll:React.FC<any> = (props) =>{//any要改的
         elementContent.forEach(el => {
             if(el.id === idstate)
              el.content = picvalue; 
-        })
-     
+        })     
         setElementContent([...elementContent]);
 
     };
@@ -122,10 +124,10 @@ const TestAll:React.FC<any> = (props) =>{//any要改的
 
     //获取文本编辑框改动 
     const txtChange = (e:ChangeEvent<HTMLTextAreaElement>) => {
-        elementContent.forEach(el => {
+     elementContent.forEach(el => {
             if(el.id === idstate)
              el.content = e.target.value
-        })
+        })   
 
         setElementContent([...elementContent]); 
         setTxtvalue(e.target.value);
@@ -145,6 +147,7 @@ const TestAll:React.FC<any> = (props) =>{//any要改的
     //预览所有元素
     const preview = (e:FormEvent<HTMLButtonElement>) => {
         //bootbox展示elementContent的所有内容 map遍历
+        setIsModalShow(true)
     };
     
     //保存所有元素
@@ -164,6 +167,29 @@ const TestAll:React.FC<any> = (props) =>{//any要改的
         setIsPicEditShow(false);
     };
     
+    
+    // //showborder
+    // const makeBorderShow = (e:MouseEvent<HTMLDivElement>,id:string) => {
+    //     //console.log('id',id);
+    //     setIdstate(id);
+    //     //console.log('idstate',idstate);
+    //     elementContent.forEach(el => {
+    //         if(el.id === idstate)
+    //          setIsBorderShow(true)
+    //     })
+    // };
+
+    // //hideborder
+    // const hideBorderShow = (e:MouseEvent<HTMLDivElement>,id:string) => {
+    //     //console.log('id',id);
+    //     setIdstate(id);
+    //     //console.log('idstate',idstate);
+    //     elementContent.forEach(el => {
+    //         if(el.id === idstate)
+    //          setIsBorderShow(false);
+    //     })
+    // };
+
 
     return(
         <div className='container-fluid'>
@@ -183,14 +209,13 @@ const TestAll:React.FC<any> = (props) =>{//any要改的
                 <button onClick={addTxt} className="btn btn-default">文字</button>
                 </div>
             </div>
-
-            <div className='col-xs-6 text-left'> 
+            <div className='col-xs-6 text-left'style={{border:'1px solid',display:'block'}}> 
                 <h3>简单编辑器</h3>
                 {
                     elementContent.map((el,i)=>{
-                        //还差样式激活 ！！！
-                        if(el.type ==="pic") return (<img key={i} src={el.content} onClick={(e)=>{editPic(e,el.id)}} alt="loading error"/>)
-                        else if(el.type ==="txt") return (<p key={i} onClick={(e)=>{editTxt(e,el.id)}} >{el.content}</p>)
+                        //还差样式激活 onMouseOver={(e)=>{makeBorderShow(e,el.id)}} onMouseDown={(e)=>{hideBorderShow(e,el.id)}}  style={{border:isBorderShow?'1px solid':''}}
+                        if(el.type ==="pic") return (<div key={el.id} ><img key={i} src={el.content} onClick={(e)=>{editPic(e,el.id)}} alt="loading error" className='img-responsive'/></div>)
+                        else if(el.type ==="txt") return (<div key={el.id} ><p onClick={(e)=>{editTxt(e,el.id)}} >{el.content}</p></div>)
                     })  
                 }
             </div> 
@@ -203,7 +228,7 @@ const TestAll:React.FC<any> = (props) =>{//any要改的
                 <hr/>             
                 <div style={{display: isPicEditShow ? "block" : "none"}}>
                     <h4>编辑</h4>
-                    <textarea onChange={picChange} value={picvalue} defaultValue={picvalue}/> 
+                    <textarea onChange={picChange} value={picvalue} defaultValue={picvalue} rows={3} cols={35}/> 
                     <br/>
                     <button onClick={savePic} className="btn btn-default">修改图片</button>
                 </div>
@@ -212,6 +237,18 @@ const TestAll:React.FC<any> = (props) =>{//any要改的
                 </div>
             </div>
 
+            {/* 
+            <Modal show={isModalShow?'true':'false'} onHide={isModalShow?'true':'false'}>
+                <Modal.Header closeButton>
+                    <Modal.Title>推荐页面</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div>111111</div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={hideModal}>Close</Button>
+                </Modal.Footer>
+            </Modal> */}
 
 
             </div>         

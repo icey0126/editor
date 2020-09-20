@@ -8,34 +8,22 @@ interface IElementProps{
     content:string
 }
 
-const initialPic = {
-    id:uuidv4(),
-    type:'pic',
-    content:'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png'
-}
-
-const initialTxt = {
-    id:uuidv4(),
-    type:'txt',
-    content:'empty text'
-}
-
 const AddElement:React.FC<any> = (props) =>{
 
-    const _elementContent = useContext(TestContext);
-    const [elementContent, setElementContent] = useState<IElementProps[]>(_elementContent);
+    const globalProps = useContext(TestContext);
+    const [elementContent, setElementContent] = useState<IElementProps[]>(globalProps._elementContent);
 
     //加图片
     const addPic = (e: FormEvent<HTMLButtonElement>) => {
         if(elementContent.length === 1 && elementContent[0].type === ''){
-            elementContent[0] = initialPic;
-            setElementContent([initialPic]);
+            elementContent[0] = globalProps.initialPic;
+            setElementContent([globalProps.initialPic]);
         }else{
             elementContent.push(
                 {
                     id: uuidv4(),//
                     type:'pic',
-                    content:initialPic.content 
+                    content:globalProps.initialPic.content 
                 }
             )
             setElementContent([...elementContent]);
@@ -45,13 +33,13 @@ const AddElement:React.FC<any> = (props) =>{
     //加文字
     const addTxt = (e: FormEvent<HTMLButtonElement>) => {
         if(elementContent.length === 1 && elementContent[0].type === ''){
-            elementContent[0] = initialTxt;
-            setElementContent([initialTxt]);
+            elementContent[0] = globalProps.initialTxt;
+            setElementContent([globalProps.initialTxt]);
         }else{
             elementContent.push({
                     id:uuidv4(),//
                     type:'txt',
-                    content:initialTxt.content
+                    content:globalProps.initialTxt.content
             })  
         }
         setElementContent([...elementContent]);

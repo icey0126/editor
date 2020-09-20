@@ -6,6 +6,7 @@ import ShowElement from './components/ShowElement';
 import DeleteElement from './components/DeleteElement';
 import ChangeElement from './components/ChangeElement';
 import TestAll from './components/TestAll';
+import { v4 as uuidv4 } from 'uuid';
 
 interface IElementProps{
   id:string,
@@ -16,9 +17,39 @@ interface IElementProps{
 const _elementContent:Array<IElementProps>=[
   {id:'',type:'',content:''}
 ]
-const key = 1;
 
-export const TestContext = createContext(_elementContent);
+const initialPic = {
+  id:uuidv4(),
+  type:'pic',
+  content:'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png'
+}
+
+const initialTxt = {
+  id:uuidv4(),
+  type:'txt',
+  content:'empty text'
+}
+
+const isPicEditShow:boolean = false;
+const isTextEditShow:boolean  = false;
+const isDeleteShow:boolean  = false;
+const idstate:string  = '';
+const picvalue:string  = initialPic.content;
+const txtvalue:string  = initialTxt.content;
+
+const globalProps={
+  _elementContent,
+  isPicEditShow,
+  isTextEditShow,
+  isDeleteShow,
+  idstate,
+  picvalue,
+  txtvalue,
+  initialPic,
+  initialTxt
+}
+
+export const TestContext = createContext(globalProps);
 
 function App() {
   const [elementContent, setElementContent] = useState<IElementProps[]>(_elementContent);
@@ -33,7 +64,7 @@ function App() {
   return (
     <div className="App">
       <TestAll/>
-      {/* <TestContext.Provider value={elementContent}>
+      {/* <TestContext.Provider value={globalProps}>
       <div className='container-fluid'>
             <div className='row'>
               <div className='col-xs-2'>

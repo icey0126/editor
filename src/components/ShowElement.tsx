@@ -1,6 +1,5 @@
 import React,{FormEvent,useContext,useState}  from 'react'
 import {TestContext} from '../App'
-import { v4 as uuidv4 } from 'uuid';
 
 interface IElementProps{
     id:string,
@@ -8,27 +7,15 @@ interface IElementProps{
     content:string
 }
 
-const initialPic = {
-    id:uuidv4(),
-    type:'pic',
-    content:'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png'
-}
-
-const initialTxt = {
-    id:uuidv4(),
-    type:'txt',
-    content:'empty text'
-}
-
 const ShowElement:React.FC<any> = (props) =>{
-    const _elementContent = useContext(TestContext);
-    const [elementContent, setElementContent] = useState<IElementProps[]>(_elementContent);
-    const [isPicEditShow, setIsPicEditShow] = useState<boolean>(false);//设置是否显示图像编辑框
-    const [isTextEditShow, setIsTextEditShow] = useState<boolean>(false);//设置是否显示文字编辑框
-    const [isDeleteShow, setIsDeleteShow] = useState<boolean>(false);//设置是否显示删除编辑框
-    const [idstate, setIdstate] = useState<string>();//设置idstate
-    const [picvalue, setPicvalue] = useState<string>(initialPic.content);//图像编辑框默认值
-    const [txtvalue, setTxtvalue] = useState<string>(initialTxt.content);//文本编辑框默认值
+    const globalProps = useContext(TestContext);
+    const [elementContent, setElementContent] = useState<IElementProps[]>(globalProps._elementContent);
+    const [isPicEditShow, setIsPicEditShow] = useState<boolean>(globalProps.isPicEditShow);//设置是否显示图像编辑框
+    const [isTextEditShow, setIsTextEditShow] = useState<boolean>(globalProps.isTextEditShow);//设置是否显示文字编辑框
+    const [isDeleteShow, setIsDeleteShow] = useState<boolean>(globalProps.isDeleteShow);//设置是否显示删除编辑框
+    const [idstate, setIdstate] = useState<string>(globalProps.idstate);//设置idstate
+    const [picvalue, setPicvalue] = useState<string>(globalProps.initialPic.content);//图像编辑框默认值
+    const [txtvalue, setTxtvalue] = useState<string>(globalProps.initialTxt.content);//文本编辑框默认值
 
      //编辑文字
      const editTxt = (e: FormEvent<HTMLParagraphElement>,id:string) => {
@@ -54,7 +41,7 @@ const ShowElement:React.FC<any> = (props) =>{
     };
 
     return(
-        <div className='col-xs-6 text-left'> 
+        <div className='col-xs-6 text-left' style={{border:'1px solid',display:'block'}}> 
         <h3>简单编辑器</h3>
         {
             elementContent.map((el,i)=>{

@@ -1,22 +1,18 @@
 import React,{FormEvent,useContext,useState}  from 'react'
 import {TestContext} from '../App'
 
-
 interface IElementProps{
     id:string,
     type:string,
     content:string
 }
 
-
-
 const EditPage:React.FC<any> = (props) =>{
-    const _elementContent = useContext(TestContext);
-    const [elementContent, setElementContent] = useState<IElementProps[]>(_elementContent);
-    //这边要改
-    const [isDeleteShow, setIsDeleteShow] = useState<boolean>(false);//设置是否显示删除编辑框
-    const [isPicEditShow, setIsPicEditShow] = useState<boolean>(false);//设置是否显示图像编辑框
-    const [isTextEditShow, setIsTextEditShow] = useState<boolean>(false);//设置是否显示文字编辑框
+    const globalProps = useContext(TestContext);
+    const [elementContent, setElementContent] = useState<IElementProps[]>(globalProps._elementContent);
+    const [isDeleteShow, setIsDeleteShow] = useState<boolean>(globalProps.isDeleteShow);//设置是否显示删除编辑框
+    const [isPicEditShow, setIsPicEditShow] = useState<boolean>(globalProps.isPicEditShow);//设置是否显示图像编辑框
+    const [isTextEditShow, setIsTextEditShow] = useState<boolean>(globalProps.isTextEditShow);//设置是否显示文字编辑框
 
     //预览所有元素
     const preview = (e:FormEvent<HTMLButtonElement>) => {
