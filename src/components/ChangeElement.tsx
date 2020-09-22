@@ -1,5 +1,5 @@
 import React,{FormEvent,useContext,useState,ChangeEvent} from 'react'
-import {TestContext} from '../App'
+import { AppContext } from '../context';
 
 interface IElementProps{
     id:string,
@@ -8,7 +8,7 @@ interface IElementProps{
 }
 
 const ChangeElement:React.FC<any> = (props) =>{
-    const globalProps = useContext(TestContext);
+    const { state: globalProps, dispatch } = useContext(AppContext);
     const [elementContent, setElementContent] = useState<IElementProps[]>(globalProps._elementContent);
     const [isPicEditShow, setIsPicEditShow] = useState<boolean>(globalProps.isPicEditShow);//设置是否显示图像编辑框
     const [isTextEditShow, setIsTextEditShow] = useState<boolean>(globalProps.isTextEditShow);//设置是否显示文字编辑框

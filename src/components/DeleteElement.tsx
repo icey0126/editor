@@ -1,5 +1,5 @@
 import React,{FormEvent,useContext,useState}  from 'react'
-import {TestContext} from '../App'
+import { AppContext } from '../context';
 
 interface IElementProps{
     id:string,
@@ -8,7 +8,7 @@ interface IElementProps{
 }
 
 const DeleteElement:React.FC<any> = (props) =>{
-    const globalProps = useContext(TestContext);
+    const { state: globalProps, dispatch } = useContext(AppContext);
     const [elementContent, setElementContent] = useState<IElementProps[]>(globalProps._elementContent);
     const [isDeleteShow, setIsDeleteShow] = useState<boolean>(globalProps.isDeleteShow);//设置是否显示删除编辑框
     const [isPicEditShow, setIsPicEditShow] = useState<boolean>(globalProps.isPicEditShow);//设置是否显示图像编辑框

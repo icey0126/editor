@@ -1,5 +1,6 @@
-import React,{FormEvent,useContext,useState}  from 'react'
-import {TestContext} from '../App'
+import React,{ FormEvent, useContext, useState}  from 'react'
+
+import { AppContext } from '../context';
 
 interface IElementProps{
     id:string,
@@ -8,14 +9,18 @@ interface IElementProps{
 }
 
 const ShowElement:React.FC<any> = (props) =>{
-    const globalProps = useContext(TestContext);
-    const [elementContent, setElementContent] = useState<IElementProps[]>(globalProps._elementContent);
+
+  
+    const { state: globalProps, dispatch } = useContext(AppContext);
+    const { _elementContent: elementContent } = globalProps;
+    
     const [isPicEditShow, setIsPicEditShow] = useState<boolean>(globalProps.isPicEditShow);//设置是否显示图像编辑框
     const [isTextEditShow, setIsTextEditShow] = useState<boolean>(globalProps.isTextEditShow);//设置是否显示文字编辑框
     const [isDeleteShow, setIsDeleteShow] = useState<boolean>(globalProps.isDeleteShow);//设置是否显示删除编辑框
     const [idstate, setIdstate] = useState<string>(globalProps.idstate);//设置idstate
     const [picvalue, setPicvalue] = useState<string>(globalProps.initialPic.content);//图像编辑框默认值
     const [txtvalue, setTxtvalue] = useState<string>(globalProps.initialTxt.content);//文本编辑框默认值
+
 
      //编辑文字
      const editTxt = (e: FormEvent<HTMLParagraphElement>,id:string) => {
