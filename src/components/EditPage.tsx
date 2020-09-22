@@ -19,10 +19,9 @@ const EditPage:React.FC<any> = (props) =>{
     
     //清空所有元素
     const deleteAll = (e:FormEvent<HTMLButtonElement>) => {
-        let newElement = elementContent.splice(0,elementContent.length);
         localStorage.removeItem('elementContent');
         const newSate ={
-            _elementContent:newElement,
+            _elementContent:[],
             isDeleteShow:false,
             isTextEditShow:false,
             isPicEditShow:false

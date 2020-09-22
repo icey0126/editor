@@ -14,7 +14,7 @@ const ShowElement:React.FC<any> = (props) =>{
             isTextEditShow:true,
             isPicEditShow:false,
             txtvalue:txtItem?.content,
-            idstate:id
+            idstate:id,
         }
         dispatch({
             type: 'editTxt',
