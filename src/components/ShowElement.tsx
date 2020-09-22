@@ -30,7 +30,7 @@ const ShowElement:React.FC<any> = (props) =>{
             isPicEditShow:true,
             isTextEditShow:false,
             picvalue:picItem?.content,
-            idstate:id
+            idstate:id,
         }
         dispatch({
             type: 'editPic',

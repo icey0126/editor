@@ -1,74 +1,49 @@
 const reducer = (state:any, action:any) => {
-  console.log('action:', action)
+  //console.log('action:', action)
   switch (action.type) {
       case 'addPic': {
-        const { payload } = action;
+        const { payload } = action; //list需要新加数据
         return {...state,_elementContent:[...state._elementContent,...payload]};
       } 
       case 'addTxt':{
-        const { payload } = action;
+        const { payload } = action; //list需要新加数据
         return {...state,_elementContent:[...state._elementContent,...payload]};
       }
-      case 'editPic':{
+      case 'editPic':{ //改变数据
         const { payload } = action;
-        return {...state,
-          isDeleteShow:[...state.isDeleteShow,payload.isDeleteShow],
-          isTextEditShow:[...state.isTextEditShow,payload.isTextEditShow],
-          isPicEditShow:[...state.isPicEditShow,payload.isPicEditShow],
-          picvalue:[...state.picvalue,payload.picvalue],
-          idstate:[...state.idstate,payload.idstate]
-        };
+        return {...state,...payload};
       }
-      case 'editTxt':{
+      case 'editTxt':{ //改变数据
         const { payload } = action;
-        return {...state,
-          isDeleteShow:[...state.isDeleteShow,payload.isDeleteShow],
-          isTextEditShow:[...state.isTextEditShow,payload.isTextEditShow],
-          isPicEditShow:[...state.isPicEditShow,payload.isPicEditShow],
-          txtvalue:[...state.txtvalue,payload.txtvalue],
-          idstate:[...state.idstate,payload.idstate]
-        };
+        return {...state,...payload};
       }
-      case 'txtChange':{
+      case 'txtChange':{ //改变数据
         const { payload } = action;
-        return {...state,
-          txtvalue:[...state.txtvalue,payload.txtvalue],
-          _elementContent:[...state._elementContent,payload._elementContent]
-        };
+        return {...state,...payload};
       };
-      case 'picChange':{
+      case 'picChange':{ //改变数据
         const { payload } = action;
-        return {...state,picvalue:[...state.picvalue,payload.picvalue]};
+        return {...state,...payload};
       };
-      case 'savePic':{
+      case 'savePic':{ //改变数据
         const { payload } = action;
-        return {...state,_elementContent:[...state._elementContent,payload]};
+        return {...state,...payload};
       };
-      case 'deleteEl':{
+      case 'deleteEl':{ //改变数据
         const { payload } = action;
-        return {...state,
-          _elementContent:[...state._elementContent,payload._elementContent],
-          isDeleteShow:[...state.isDeleteShow,payload.isDeleteShow],
-          isTextEditShow:[...state.isTextEditShow,payload.isTextEditShow],
-          isPicEditShow:[...state.isPicEditShow,payload.isPicEditShow]   
-        };
+        return {...state,...payload};
       }
-      case 'deleteAll':{
+      case 'deleteAll':{ //改变数据
         const { payload } = action;
-        return {...state,
-          _elementContent:[...state._elementContent,payload._elementContent],
-          isDeleteShow:[...state.isDeleteShow,payload.isDeleteShow],
-          isTextEditShow:[...state.isTextEditShow,payload.isTextEditShow],
-          isPicEditShow:[...state.isPicEditShow,payload.isPicEditShow]   
-        };
+        return {...state,...payload};
       }
-      case 'makeBorderShow': {
+      case 'makeBorderShow': { //改变数据
         const { payload } = action;
-        return {...state,_elementContent:[...state._elementContent,payload]};
+        return {...state,...payload};
       } 
-      case 'hideBorderShow': {
+      case 'hideBorderShow': { //改变数据
         const { payload } = action;
-        return {...state,_elementContent:[...state._elementContent,payload]};
+        return {...state,...payload};
       } 
       default:
           throw new Error();

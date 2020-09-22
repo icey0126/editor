@@ -24,7 +24,7 @@ const ChangeElement:React.FC<any> = (props) =>{
              el.content = globalProps.picvalue; 
         })  
         dispatch({
-            type: 'addPic',
+            type: 'savePic',
             payload: elementContent
         })
     };
@@ -40,7 +40,7 @@ const ChangeElement:React.FC<any> = (props) =>{
             _elementContent:elementContent
         }
         dispatch({
-            type: 'addTxt',
+            type: 'txtChange',
             payload: newSate
         })
     };
@@ -49,7 +49,7 @@ const ChangeElement:React.FC<any> = (props) =>{
         <div>
             <div style={{display: globalProps.isPicEditShow ? "block" : "none"}}>
             <h4>编辑</h4>
-                <textarea onChange={picChange} value={globalProps.picvalue} defaultValue={globalProps.picvalue}/> 
+                <textarea onChange={picChange} value={globalProps.picvalue} defaultValue={globalProps.initialPic.content}/> 
                 <br/>
                 <button onClick={savePic} className="btn btn-default">修改图片</button>
             </div>
