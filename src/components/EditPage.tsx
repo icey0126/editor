@@ -1,24 +1,15 @@
 import React,{FormEvent,useContext,useState}  from 'react'
-
+import { Modal, Button } from 'antd';
 import { AppContext } from '../context';
-
-
-interface IElementProps{
-    id:string,
-    type:string,
-    content:string
-}
 
 const EditPage:React.FC<any> = (props) =>{
     const { state: globalProps, dispatch } = useContext(AppContext);
-    const [elementContent, setElementContent] = useState<IElementProps[]>(globalProps._elementContent);
-    const [isDeleteShow, setIsDeleteShow] = useState<boolean>(globalProps.isDeleteShow);//设置是否显示删除编辑框
-    const [isPicEditShow, setIsPicEditShow] = useState<boolean>(globalProps.isPicEditShow);//设置是否显示图像编辑框
-    const [isTextEditShow, setIsTextEditShow] = useState<boolean>(globalProps.isTextEditShow);//设置是否显示文字编辑框
+    const { _elementContent: elementContent } = globalProps;
+    const [isModalShow, setIsModalShow] = useState<boolean>(false);//模态框默认值
 
     //预览所有元素
     const preview = (e:FormEvent<HTMLButtonElement>) => {
-        //bootbox展示elementContent的所有内容 map遍历
+        setIsModalShow(true);
     };
     
     //保存所有元素
@@ -28,13 +19,18 @@ const EditPage:React.FC<any> = (props) =>{
     
     //清空所有元素
     const deleteAll = (e:FormEvent<HTMLButtonElement>) => {
-        elementContent.splice(0,elementContent.length);
-        setElementContent([...elementContent]);
-        //清空localstorage
+        let newElement = elementContent.splice(0,elementContent.length);
         localStorage.removeItem('elementContent');
-        setIsDeleteShow(false);
-        setIsTextEditShow(false);
-        setIsPicEditShow(false);
+        const newSate ={
+            _elementContent:newElement,
+            isDeleteShow:false,
+            isTextEditShow:false,
+            isPicEditShow:false
+        }
+        dispatch({
+            type: 'deleteAll',
+            payload: newSate
+        })
     };
 
     return(
@@ -44,7 +40,21 @@ const EditPage:React.FC<any> = (props) =>{
             <button onClick={preview} className="btn btn-default">预览</button>
             <button onClick={saveAll} className="btn btn-default">保存</button>
             <button onClick={deleteAll} className="btn btn-default">清空</button>
-            </div>
+            </div>     
+            <Modal
+            title="预览内容"
+            centered = {true}
+            visible={isModalShow}
+            onOk={() => {setIsModalShow(false); }}
+            onCancel={() => {setIsModalShow(false);}}
+            >
+            {
+                elementContent.map((el,i)=>{
+                    if(el.type ==="pic") return (<div key={el.id} ><img key={i} src={el.content} alt="loading error" className='img-responsive'/></div>)
+                    else if(el.type ==="txt") return (<div key={el.id} ><p>{el.content}</p></div>)
+                })  
+            }
+            </Modal>
         </div>
     )
 }

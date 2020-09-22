@@ -1,5 +1,6 @@
 import React,{FormEvent,useContext,useState} from 'react'
 import { AppContext } from '../context';
+import { v4 as uuidv4 } from 'uuid';
 
 const AddElement:React.FC<any> = (props) =>{
 
@@ -7,18 +8,40 @@ const AddElement:React.FC<any> = (props) =>{
 
     //加图片
     const addPic = (e: FormEvent<HTMLButtonElement>) => {
-        dispatch({
-            type: 'addPic',
-            payload: [globalProps.initialPic]
-        })
+        if(globalProps._elementContent.length === 0 ){
+            dispatch({
+                type: 'addPic',
+                payload: [globalProps.initialPic]
+            })
+        }else{
+            dispatch({
+                type: 'addPic',
+                payload: [{
+                    id: uuidv4(),
+                    type:'pic',
+                    content:globalProps.initialPic.content 
+                }]
+            })
+        }
     };
 
     //加文字
     const addTxt = (e: FormEvent<HTMLButtonElement>) => {
-        dispatch({
-            type: 'addTxt',
-            payload: [globalProps.initialTxt]
-        })
+        if(globalProps._elementContent.length === 1){
+            dispatch({
+                type: 'addTxt',
+                payload: [globalProps.initialTxt]
+            })
+        }else{
+            dispatch({
+                type: 'addTxt',
+                payload: [{
+                    id: uuidv4(),
+                    type:'txt',
+                    content:globalProps.initialTxt.content 
+                }]
+            })
+        }
     };
 
     return(

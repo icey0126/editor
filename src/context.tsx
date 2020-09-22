@@ -3,9 +3,10 @@ import { v4 as uuidv4 } from 'uuid';
 import reducers from './reducers';
 
 type IElement = {
-  id: string;
-  type: string;
-  content: string;
+  id: string,
+  type: string,
+  content: string,
+  isBorderShow?:boolean
 }
 
 type IGlobalProps = {
@@ -51,9 +52,7 @@ const AppContext = createContext<{
 
 const AppProvider: React.FC = ({ children }) => {
   const [state, dispatch] = useReducer(reducers, globalProps);
-
   
-
   return (
     <AppContext.Provider value={{state, dispatch}}>
       {children}
